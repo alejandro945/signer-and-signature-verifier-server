@@ -32,7 +32,9 @@ SECRET_KEY = 'django-insecure-a$wsj08@8_%_#ns2$py)hbl#q-h10$(@o!^+*w6b_odlkuv@bq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'signer-verifier-server.onrender.com',
+]
 
 
 # Application definition
@@ -82,11 +84,11 @@ WSGI_APPLICATION = 'signer_and_signature_verifier_server.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 try:
-    PROD_DATABSE = env('DATABASE_URL')
+    PROD_DATABSE = os.environ.get('DATABASE_URL')
 except:
     PROD_DATABSE = ''
 
-if(PROD_DATABSE == ''):
+if(PROD_DATABSE == None or PROD_DATABSE == ''):
     # If DATABASE_URL is not set, use sqlite3
     DATABASE_URL = {
         'default': {
@@ -96,7 +98,7 @@ if(PROD_DATABSE == ''):
     }
 else:
     DATABASE_URL = {
-        "default": dj_database_url.parse(env('DATABASE_URL'))
+        "default": dj_database_url.parse(os.environ.get('DATABASE_URL'))
     }
 
 DATABASES = DATABASE_URL
