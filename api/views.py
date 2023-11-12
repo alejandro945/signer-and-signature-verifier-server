@@ -5,16 +5,14 @@ from rest_framework import status
 from .models import RSAKeyPair
 from .serializers import RSAKeyPairSerializer
 from .rsa_signature import generate_rsa_key_pair, sign_file, verify_signature
+from cryptography.exceptions import InvalidKey
 
 class RSAKeyPairView(APIView):
     queryset = RSAKeyPair.objects.all()
     serializer_class = RSAKeyPairSerializer
 
     def get_object(self, pk):
-        try:
-            return RSAKeyPair.objects.get(pk=pk)
-        except RSAKeyPair.DoesNotExist:
-            raise Http404
+        return RSAKeyPair.objects.get(pk=pk)
 
     def get(self, request, *args, **kwargs):
         #Return all RSA key pairs
@@ -33,39 +31,44 @@ class RSAKeyPairView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     def delete(self, request, pk, format=None):
-        instance = self.get_object(pk)
-        instance.delete()
-        return Response({'message': 'RSA key pair deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        try:
+            instance = self.get_object(pk)
+            instance.delete()
+            return Response({'message': 'RSA key pair deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        except RSAKeyPair.DoesNotExist:
+            return Response({'error': 'RSA key pair does not exist'}, status=status.HTTP_404_NOT_FOUND)
     
 class SignFileView(APIView):
-    queryset = RSAKeyPair.objects.all()
-    serializer_class = RSAKeyPairSerializer
-
+    """
+    This option receives as inputs any @file_to_sign, and @private_key_file. 
+    Once the private key lock password has been verified, the program must 
+    generate the digital signature of the file, and save it in a separate file.
+    """
     def post(self, request, *args, **kwargs):
         password = request.data.get('password')
-        instance = self.get_object()
         file_to_sign = request.FILES['file_to_sign']
-
-        # Verificar la contraseña antes de proceder
-        if instance.password == password:
-            sign_file(file_to_sign, instance.private_key, password)
-            return Response({'message': 'File signed successfully'}, status=status.HTTP_200_OK)
-        else:
+        private_key_file = request.FILES['private_key_file']
+        #Extract data from files
+        private_key = private_key_file.read()
+        file_to_sign = file_to_sign.read()
+        try:
+            signature = sign_file(file_to_sign, private_key, password)
+            return Response({'signature': signature}, status=status.HTTP_201_CREATED)
+        except ValueError:
             return Response({'error': 'Invalid password'}, status=status.HTTP_401_UNAUTHORIZED)
 
+"""
+This option receives as inputs any @original_file, @signature_file, and @public_key_file.
+The program must verify that the signature corresponds to the original file.
+"""
 class VerifySignatureView(APIView):
-    queryset = RSAKeyPair.objects.all()
-    serializer_class = RSAKeyPairSerializer
-
-    def get(self, request, *args, **kwargs):
-        instance = self.get_object()
+    def post(self, request, *args, **kwargs):
         original_file = request.FILES['original_file']
         signature_file = request.FILES['signature_file']
-
-        # Verificar la firma
-        is_valid = verify_signature(original_file, signature_file, instance.public_key)
-
-        if is_valid:
+        public_key_file = request.FILES['public_key_file']
+        # Verify signature
+        try:
+            verify_signature(original_file.read(), signature_file.read(), public_key_file.read())
             return Response({'message': 'Signature is valid'}, status=status.HTTP_200_OK)
-        else:
+        except Exception:
             return Response({'error': 'Invalid signature'}, status=status.HTTP_401_UNAUTHORIZED)

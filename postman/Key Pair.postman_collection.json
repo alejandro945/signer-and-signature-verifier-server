@@ -1,0 +1,181 @@
+{
+	"info": {
+		"_postman_id": "4290d289-1b3f-4c52-bfc1-6bf3a0ab0965",
+		"name": "Key Pair",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14327953",
+		"_collection_link": "https://martian-meadow-576512.postman.co/workspace/My-Workspace~5a56d89b-518e-4242-8208-e6b5470b4f88/collection/14327953-4290d289-1b3f-4c52-bfc1-6bf3a0ab0965?action=share&source=collection_link&creator=14327953"
+	},
+	"item": [
+		{
+			"name": "Generate key pair",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"password\": \"test passphrase\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/key-pair/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"key-pair",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get key pairs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/key-pair/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"key-pair",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete key pair",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/key-pair/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"key-pair",
+						"1",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign File",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file_to_sign",
+							"type": "file",
+							"src": "/Users/alejandrovarela/Library/CloudStorage/GoogleDrive-alejo8677@gmail.com/My Drive/UNIVERSIDAD 🎓/SEMESTRE 7/SEGURIDAD/SEMANA 16/test.txt"
+						},
+						{
+							"key": "private_key_file",
+							"type": "file",
+							"src": "/Users/alejandrovarela/Library/CloudStorage/GoogleDrive-alejo8677@gmail.com/My Drive/UNIVERSIDAD 🎓/SEMESTRE 7/SEGURIDAD/SEMANA 16/private_key.txt"
+						},
+						{
+							"key": "password",
+							"value": "suarez es mk",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/sign-file/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"sign-file",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify Sign",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "original_file",
+							"type": "file",
+							"src": "/Users/alejandrovarela/Library/CloudStorage/GoogleDrive-alejo8677@gmail.com/My Drive/UNIVERSIDAD 🎓/SEMESTRE 7/SEGURIDAD/SEMANA 16/test.txt"
+						},
+						{
+							"key": "signature_file",
+							"type": "file",
+							"src": "/Users/alejandrovarela/Library/CloudStorage/GoogleDrive-alejo8677@gmail.com/My Drive/UNIVERSIDAD 🎓/SEMESTRE 7/SEGURIDAD/SEMANA 16/sign.txt"
+						},
+						{
+							"key": "public_key_file",
+							"type": "file",
+							"src": "/Users/alejandrovarela/Library/CloudStorage/GoogleDrive-alejo8677@gmail.com/My Drive/UNIVERSIDAD 🎓/SEMESTRE 7/SEGURIDAD/SEMANA 16/public_key.txt"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/verify-signature/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"verify-signature",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
