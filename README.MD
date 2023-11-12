@@ -111,3 +111,17 @@ curl -X DELETE http://domain.com/key-pair/1/
 Make sure to replace your-domain.com with your server's URL.
 
 Remember to properly secure these endpoints in a production environment and configure HTTPS to maintain the security of private keys and communications.
+
+# Start the server
+
+To start the server, run the following command:
+
+```bash
+python manage.py runserver
+```
+
+guniconr is also supported:
+
+```bash
+gunicorn signer_and_signature_verifier_server.wsgi
+```

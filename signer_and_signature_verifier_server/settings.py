@@ -11,6 +11,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import dj_database_url
+import os
+import environ
+
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -74,13 +81,25 @@ WSGI_APPLICATION = 'signer_and_signature_verifier_server.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+try:
+    PROD_DATABSE = env('DATABASE_URL')
+except:
+    PROD_DATABSE = ''
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if(PROD_DATABSE == ''):
+    # If DATABASE_URL is not set, use sqlite3
+    DATABASE_URL = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASE_URL = {
+        "default": dj_database_url.parse(env('DATABASE_URL'))
+    }
+
+DATABASES = DATABASE_URL
 
 
 # Password validation
