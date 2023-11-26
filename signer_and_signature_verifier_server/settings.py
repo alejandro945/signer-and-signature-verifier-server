@@ -33,9 +33,11 @@ SECRET_KEY = 'django-insecure-a$wsj08@8_%_#ns2$py)hbl#q-h10$(@o!^+*w6b_odlkuv@bq
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'signer-verifier-server.onrender.com',
+    '*', 
+    'localhost',
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 
@@ -46,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'api'
 ]
@@ -53,6 +56,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
